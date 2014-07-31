@@ -1,0 +1,9 @@
+This data is available courtesy of Dr. Giancarlo-Ferrari-Trecate and Dr. Aleksander Juloski.
+--------------------------------------------------------------------------------------------
+Here is a description of the data:
+
+T (60001 x 1): time
+Y (60001 x 1): head position
+U (60001 x 1): voltage
+
+The sampling frequency is 4000 Hz, but different authors resampled at lower frequencies. For instance, Juloski resampled at 50 Hz, while Paoletti resampled at 150 Hz. 
