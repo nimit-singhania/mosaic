@@ -32,7 +32,7 @@ function [clusterData] = runClusterFerrari(tcase, clusterSize, numPlanes, iter)
 % Runs test on Ferrari-Trecate data set No. <tcase> assuming given bound
 % and repeats it <iter> number of times
 
-load(['../real-data/ferrari/new' num2str(tcase) '.mat']);
+load(['../benchmarks/pick-and-place-data/new' num2str(tcase) '.mat']);
 
 a = 2;
 b = 2;
