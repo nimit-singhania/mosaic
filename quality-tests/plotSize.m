@@ -46,7 +46,6 @@ hold on;
 hb = bar(1:length(funName), sizeMat');
 %stdMat = [zeros(1, length(funName)); stdMat];
 
-colors = colormap;
 
 for ib = 1:numel(hb)
       % Find the centers of the bars
