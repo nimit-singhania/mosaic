@@ -60,5 +60,5 @@ Please see the file called LICENSE.
 
 Contacts
 --------
-Please contact Nimit Singhania (nimits@seas.upenn.edu) for any queries or comments.
+Please contact Nimit Singhania (nimits@seas.upenn.edu) for any queries or comments.  
 Please report any bugs at https://github.com/nimit-singhania/mosaic/issues.
