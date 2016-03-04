@@ -44,7 +44,6 @@ end
 figure
 hold on;
 hb = bar(1:length(funName), valMat');
-colormap(colors);
 
 for ib = 1:numel(hb)
       % Find the centers of the bars
