@@ -28,7 +28,7 @@
 % OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 % IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function [synergyData, impreciseData] = runFerrari(tcase, bound, iter)
+function [MosaicData, SVMData, DTreeData] = runFerrari(tcase, bound, iter)
 % Runs test on Ferrari-Trecate data set No. <tcase> assuming given bound
 % and repeats it <iter> number of times
 
@@ -72,8 +72,9 @@ testZ = Y(max(a, b) + 1:end);
 
 
 % run tests
-synergyData = [];
-impreciseData = [];
+MosaicData = [];
+SVMData = [];
+DTreeData = [];
 clusterData = [];
 for j = 1:iter
     h_bound = bound;
@@ -97,10 +98,10 @@ for j = 1:iter
     train_rmse = sqrt(mean((trainZ-trainZ1).^2));
     tsize = sizeModel(guards);
 
-    synergyData = [synergyData; tsize, test_rmse, train_rmse];
+    MosaicData = [MosaicData; tsize, test_rmse, train_rmse];
 
     
-    %%%%%%%%% Compare with 2nd technique %%%%%%%%%%%%%%%
+    %%%%%%%%% Compare with SVM as guard predicate learner %%%%%%%%%%%%%%%
     guards = getSimpleConditionals3(trainI, C);
 
     trainZ1 = getSimpleLearntFVal(guards, H, trainI);
@@ -118,7 +119,28 @@ for j = 1:iter
         tsize = tsize + length(x) + 1;
     end
 
-    impreciseData = [impreciseData; tsize, test_rmse, train_rmse];
+    SVMData = [SVMData; tsize, test_rmse, train_rmse];
+    
+    %%%%%%%%% Compare with Decision Trees as guard predicate learner %%%%%%%%%%%%%%%
+    guards = getDTreeConditionals(trainI, C);
+
+    trainZ1 = getDTreeValue(guards, H, trainI);
+    testZ1 = getDTreeValue(guards, H, testI);
+
+    train_rmse = sqrt(mean((trainZ-trainZ1).^2));
+    test_rmse = sqrt(mean((testZ-testZ1).^2));
+
+    tsize = size(guards, 1);
+    for m = 1:size(guards, 1)
+        if(isempty(guards{m}))
+            continue;
+        end
+        x = guards{m};
+        tsize = tsize + x.NumNodes;
+    end
+
+    DTreeData = [DTreeData; tsize, test_rmse, train_rmse];
+
     
 end
 

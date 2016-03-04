@@ -30,25 +30,25 @@
 
 clear
 
-clusterSize = [70, 40, 25, 10];
-numPlanes = [2, 4, 8, 12];
+clusterSize = [25, 10];
+numPlanes = [2, 4];
 
-bounds = [0.05, 0.08, 0.10, 0.13, 0.15, 0.17, 0.2];
+bounds = [0.08, 0.10, 0.13, 0.15, 0.17, 0.2];
 tcase = 1;
 testFerrari(tcase, bounds, clusterSize, numPlanes)
 plotFerrariData(tcase);
 
-bounds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5];
+bounds = [0.15, 0.2, 0.25, 0.3, 0.4, 0.5];
 tcase = 2;
 testFerrari(tcase, bounds, clusterSize, numPlanes)
 plotFerrariData(tcase);
 
-bounds = [0.12, 0.20, 0.3, 0.4, 0.5, 0.6, 0.7];
+bounds = [0.20, 0.3, 0.4, 0.5, 0.6, 0.7];
 tcase = 4;
 testFerrari(tcase, bounds, clusterSize, numPlanes)
 plotFerrariData(tcase);
 
-bounds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5];
+bounds = [0.15, 0.2, 0.25, 0.3, 0.4, 0.5];
 tcase = 3;
 testFerrari(tcase, bounds, clusterSize, numPlanes)
 plotFerrariData(tcase);

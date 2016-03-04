@@ -35,8 +35,9 @@ figure
 hold on;
 
 [~, ind] = sort(bounds);
-s1 = errorbar(bounds(ind), testRmseVal(ind, 1), testRmseVal(ind, 1) - testRmseLVal(ind, 1), testRmseUVal(ind, 1) - testRmseVal(ind, 1), 'Marker', 'x','markersize', 10, 'LineWidth',1.5);
-s2 = errorbar(bounds(ind), testRmseVal(ind, 2), testRmseVal(ind, 2) - testRmseLVal(ind, 2), testRmseUVal(ind, 2) - testRmseVal(ind, 2), 'r', 'Marker', '+','markersize', 10, 'LineWidth',1.5);
+s1 = errorbar(bounds(ind), testRmseVal(ind, 1), testRmseVal(ind, 1) - testRmseLVal(ind, 1), testRmseUVal(ind, 1) - testRmseVal(ind, 1), 'b', 'Marker', 'x','markersize', 5, 'LineWidth',1.5);
+s2 = errorbar(bounds(ind), testRmseVal(ind, 2), testRmseVal(ind, 2) - testRmseLVal(ind, 2), testRmseUVal(ind, 2) - testRmseVal(ind, 2), 'r', 'Marker', '+','markersize', 5, 'LineWidth',1.5);
+s3 = errorbar(bounds(ind), testRmseVal(ind, 3), testRmseVal(ind, 3) - testRmseLVal(ind, 3), testRmseUVal(ind, 3) - testRmseVal(ind, 3), 'g', 'Marker', '*','markersize', 5, 'LineWidth',1.5);
 
 range = linspace(min(bounds), max(bounds), length(clusterData(:, 4)));
 range = range + 0.005;
@@ -45,12 +46,13 @@ scatter(range, clusterData(:, 4), 'k', 'Marker', 'o', 'LineWidth',1.5);
 % r1 = plot(bounds(ind), trainRmseVal(ind, 1), '--','Marker', 'x', 'LineWidth',1.1);
 % r2 = plot(bounds(ind), trainRmseVal(ind, 2), 'r--', 'Marker', '+', 'LineWidth',1.1);
 
-r1 = errorbar(bounds(ind), trainRmseVal(ind, 1), trainRmseVal(ind, 1) - trainRmseLVal(ind, 1), trainRmseUVal(ind, 1) - trainRmseVal(ind, 1), '--','Marker', 'x', 'LineWidth',1.1);
+r1 = errorbar(bounds(ind), trainRmseVal(ind, 1), trainRmseVal(ind, 1) - trainRmseLVal(ind, 1), trainRmseUVal(ind, 1) - trainRmseVal(ind, 1), '--b','Marker', 'x', 'LineWidth',1.1);
 r2 = errorbar(bounds(ind), trainRmseVal(ind, 2), trainRmseVal(ind, 2) - trainRmseLVal(ind, 2), trainRmseUVal(ind, 2) - trainRmseVal(ind, 2), '--r', 'Marker', '+', 'LineWidth',1.1);
+r3 = errorbar(bounds(ind), trainRmseVal(ind, 3), trainRmseVal(ind, 3) - trainRmseLVal(ind, 3), trainRmseUVal(ind, 3) - trainRmseVal(ind, 3), '--g', 'Marker', '*', 'LineWidth',1.1);
 scatter(range, clusterData(:, 5), 20, 'k', 'Marker', 'd', 'LineWidth',0.8);
 
 pbaspect([3 2 1])
-legend('mosaic test', 'linear test', 'cluster test', 'mosaic train', 'linear train', 'cluster train');
+legend('mosaic test', 'SVM test', 'DTree test', 'cluster test', 'mosaic train', 'SVM train', 'DTree train', 'cluster train');
 
 %xlabel('Error bounds \delta');
 %ylabel('Test Root Mean Square Error');
@@ -65,19 +67,19 @@ hold off;
 
 figure
 hold on;
-sizeMat = [tsizeVal(ind, 1), tsizeVal(ind, 2)]';
+sizeMat = [tsizeVal(ind, 1), tsizeVal(ind, 2), tsizeVal(ind, 3)]';
 hb = bar(1:length(bounds), sizeMat');
-stdMat = [tsizeDev(ind, 1), tsizeDev(ind, 2)]';
+stdMat = [tsizeDev(ind, 1), tsizeDev(ind, 2), tsizeDev(ind, 3)]';
 
-for ib = 1:numel(hb)
-      % Find the centers of the bars
-      xData = get(get(hb(ib),'Children'),'XData');
-      barCenters = mean(unique(xData,'rows'));
-      errorbar(barCenters,sizeMat(ib,:),stdMat(ib,:),'k.')
-end
+% for ib = 1:numel(hb)
+%       % Find the centers of the bars
+%       xData = get(get(hb(ib),'Children'),'XData');
+%       barCenters = mean(unique(xData,'rows'));
+%       errorbar(barCenters,sizeMat(ib,:),stdMat(ib,:),'k.')
+% end
 
 pbaspect([3 2 1])
-legend(hb, 'mosaic', 'linear', 'Location', 'NorthEast');
+legend(hb, 'mosaic', 'SVM', 'DTree', 'Location', 'NorthEast');
 
 xlhand = get(gca,'xlabel');
 set(xlhand,'string','Error bound \delta','fontsize',15, 'FontWeight', 'bold')

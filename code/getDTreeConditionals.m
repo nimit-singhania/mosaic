@@ -28,34 +28,58 @@
 % OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 % IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function [] = testFerrari(tcase, bounds, clusterSize, numPlanes)
-% Executes tests on real data and collects statistics
+function guards = getDTreeConditionals(X, clusters)
+% X represents the input vector for each point. 
+% clusters is a matrix where (i, j)th entry is 1, if ith point in X is
+%   covered by jth affine function otherwise it is 0.
 
-iter = 15;
-tsizeVal = zeros(length(bounds), 3);
-tsizeDev = zeros(length(bounds), 3);
-testRmseVal = zeros(length(bounds), 3);
-for i = 1:length(bounds)
-    [MosaicData, SVMData, DTreeData] = runFerrari(tcase, bounds(i), iter);
-    tsizeVal(i, :) = [mean(MosaicData(:, 1)), mean(SVMData(:, 1)), mean(DTreeData(:, 1))];
-    tsizeDev(i, :) = [std(MosaicData(:, 1)), std(SVMData(:, 1)), std(DTreeData(:, 1))];
-    testRmseVal(i, :) = [mean(MosaicData(:, 2)), mean(SVMData(:, 2)), mean(DTreeData(:, 2))];
-    testRmseLVal(i, :) = [min(MosaicData(:, 2)), min(SVMData(:, 2)), min(DTreeData(:, 2))];
-    testRmseUVal(i, :) = [max(MosaicData(:, 2)), max(SVMData(:, 2)), max(DTreeData(:, 2))];
-    trainRmseVal(i, :) = [mean(MosaicData(:, 3)), mean(SVMData(:, 3)), mean(DTreeData(:, 3))];
-    trainRmseLVal(i, :) = [min(MosaicData(:, 3)), min(SVMData(:, 3)), min(DTreeData(:, 3))];
-    trainRmseUVal(i, :) = [max(MosaicData(:, 3)), max(SVMData(:, 3)), max(DTreeData(:, 3))];
+% guards: It is a (k-1) length cell array. 
+%   Each cell corresponds to a guard g.
+%   It consists of m cells and g is a disjunction of predicates
+%   represented by each cell. 
+%   Each cell in g in turn is a matrix of size n x (D+1) and represents a
+%   conjunction of n affine inequalities. Each row in the matrix represents
+%   the coefficients of an affine inequality, 
+%   i.e. if the ith row is (c_1, c_2, c_3, .. c_D, c_(D+1)), then the
+%   corresponding inequality is 
+%       c_1.x_1 + c_2.x_2 + .. + c_D.x_D + c_(D+1) <= 0.
+%   In all, each guard has (m x n) inequalities and is a disjunction of m
+%   disjuncts where each disjunct is a conjunction of n conjuncts. 
+
+
+% IMPLEMENTS the second part of genPiecewiseAffineModel in EMSOFT 2014 paper.
+
+if (size(clusters, 2) <= 1)
+    guards = [];
+    return;
 end
 
-clusterData = [];
-for j = 1:length(clusterSize)
-    for k = 1:length(numPlanes)
-        [d] = runClusterFerrari(tcase, clusterSize(j), numPlanes(k), 3);
-        if(size(d, 1) > 0) 
-            clusterData = [clusterData; clusterSize(j), numPlanes(k), mean(d, 1)];
+% initialize guards cell array. 
+guards = cell(size(clusters, 2) - 1, 1);
+Y = zeros(size(X, 1), 1);
+
+
+for i = 1:size(guards, 1)
+    posI = clusters(:, i);
+    negI = any(clusters(:, (i+1):end), 2);
+    if(~any(posI & ~negI))
+        continue;
+    end
+    
+    Y(posI & ~negI) = 1;
+    Y(~posI & negI) = 0;
+    Y(posI & negI| ~posI & ~negI) = NaN;
+    
+    % learn ith guard. 
+    guards{i} = fitctree(X,Y);
+    
+    % remove points on which guard(i) is true
+    for j = 1:size(X, 1)
+        c = guards{i};
+        flag = predict(c, X(j, :));
+        if(flag)
+            clusters(j, :) = zeros(1, size(clusters, 2));
         end
     end
+    
 end
-
-save(['../stats/ferrari_' int2str(tcase) '_stats.mat'], 'bounds', 'tsizeVal', 'tsizeDev', 'testRmseVal', 'testRmseLVal', 'testRmseUVal', 'trainRmseVal', 'trainRmseLVal', 'trainRmseUVal', 'clusterData');
-
