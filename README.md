@@ -43,7 +43,7 @@ Organization
 
 - example :- Code to run tool on a simple example used in EMSOFT'14 paper.  
 
-- mosaic-example :- Code to have fun with the tool!
+- mosaic-example :- Code to run tool on the mosaic example!
 
 - quality-tests :- Code to generate synthetic data from 4 piecewise linear functions and 3 smooth non-linear functions and evaluate the performance of the tool.
 
